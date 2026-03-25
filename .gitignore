@@ -1,0 +1,68 @@
+# -----------------------------
+# OS / editor metadata
+# -----------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+.idea/
+.vscode/
+
+# -----------------------------
+# Python caches / build outputs
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# -----------------------------
+# Virtual environments
+# -----------------------------
+.venv/
+venv/
+env/
+ENV/
+
+# -----------------------------
+# Jupyter
+# -----------------------------
+.ipynb_checkpoints/
+
+# -----------------------------
+# Experiment artifacts (large/generated)
+# -----------------------------
+pretrained_ckpt/
+entity_ckpt/
+summary_ckpt/
+saved_models/
+log/
+permutations/
+scores/
+
+figures/
+human_evaluation/
+
+# -----------------------------
+# Hugging Face caches / local downloads
+# -----------------------------
+hf_cache/
+hf_datasets/
+
+# -----------------------------
+# Local environment / secrets
+# -----------------------------
+.env
+.env.*
+*.local
