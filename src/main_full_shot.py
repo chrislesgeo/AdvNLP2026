@@ -26,6 +26,16 @@ from models.model_summary_mix import ModelSummaryMix
 
 
 
+def load_dataset_compat(dataset_args, cache_dir, download_mode=None):
+    kwargs = {"cache_dir": cache_dir}
+    if download_mode is not None:
+        kwargs["download_mode"] = download_mode
+    try:
+        return load_dataset(*dataset_args, verification_mode="no_checks", **kwargs)
+    except TypeError:
+        return load_dataset(*dataset_args, ignore_verifications=True, **kwargs)
+
+
 def set_args():
     parser = argparse.ArgumentParser(description="latentRE")
 
@@ -372,15 +382,17 @@ def main(args):
     args.save_dir = args.data_dir + args.dataset + "/full/"
     os.makedirs(args.save_dir, exist_ok=True)
 
-    dataset_args = [args.dataset_name, args.dataset_version]
+    dataset_args = [args.dataset_loader_name, args.dataset_version]
+    if args.dataset_loader_name.endswith("/samsum"):
+        dataset_args = [args.dataset_loader_name]
     if args.dataset_name == "billsum":
-        data = load_dataset(*dataset_args, download_mode="force_redownload", cache_dir=args.dataset_cache_dir)
+        data = load_dataset_compat(dataset_args, args.dataset_cache_dir, download_mode="force_redownload")
         test_data = data['test']
         x_data = data['train'].train_test_split(test_size=0.1, shuffle=True)
         train_data = x_data['train']
         valid_data = x_data['test']
     else:
-        data = load_dataset(*dataset_args, cache_dir=args.dataset_cache_dir)
+        data = load_dataset_compat(dataset_args, args.dataset_cache_dir)
         train_data = data['train']
         valid_data = data['validation']
         test_data = data['test']

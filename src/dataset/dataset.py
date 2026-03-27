@@ -3,13 +3,22 @@ import os
 import numpy as np
 
 
+def _load_dataset_compat(dataset_args, cache_dir):
+    """Load dataset across datasets versions without deprecation warnings."""
+    try:
+        return datasets.load_dataset(*dataset_args, cache_dir=cache_dir, verification_mode="no_checks")
+    except TypeError:
+        # Backward compatibility for older datasets versions.
+        return datasets.load_dataset(*dataset_args, cache_dir=cache_dir, ignore_verifications=True)
+
+
 def subsample(dataset_args, few_shot_seeds, args):
     '''
     Function that subsamples a dataset and saves the results for few-shot exps
     args:
         few_shot_seeds: list of random seeds to produce the subsamples repeatively
     '''
-    data = datasets.load_dataset(*dataset_args, cache_dir=args.dataset_cache_dir, ignore_verifications=True)#, download_mode="force_redownload")
+    data = _load_dataset_compat(dataset_args, args.dataset_cache_dir)
     print(f"\nTotal size: {len(data)}")
     if args.dataset_name == "billsum":
         # data = datasets.load_dataset(*dataset_args, download_mode="force_redownload", cache_dir=args.dataset_cache_dir)
@@ -50,7 +59,7 @@ def subsample_2k_testset(dataset_args, file_path, seed, args, n = 2000, valid = 
         file_path: directory to save the testset
         seed: random seed to sample with
     '''
-    data = datasets.load_dataset(*dataset_args, cache_dir=args.dataset_cache_dir)
+    data = _load_dataset_compat(dataset_args, args.dataset_cache_dir)
     if args.dataset_name == "billsum":
         x_data = data['train'].train_test_split(test_size=0.1, shuffle=True)
         valid_data = x_data['test']
